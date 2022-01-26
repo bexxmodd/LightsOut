@@ -1,5 +1,5 @@
 use std::fmt;
-use std::io;
+use std::collections::{VecDeque, HashSet};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub struct LightsOutPuzzle {
@@ -45,11 +45,35 @@ impl LightsOutPuzzle {
     }
 
     fn solved(&self) -> bool {
-        self.board.iter().flatten().all(|x| *x)
+        self.board.iter()
+                  .flatten()
+                  .all(|x| *x)
     }
 
-    // fn successors(&self) -> Vec<(usize, usize)> {
-    // }
+    fn successors(&self) -> Vec<(usize, usize)> {
+        (0..self.rows).flat_map(|x| (0..self.columns)
+                      .map(move |y| (x, y)))
+                      .collect()
+    }
+
+    pub fn solve(&self) -> Option<Vec<(usize, usize)>> {
+        let mut steps = vec![];
+        if self.solved() { return Some(steps) }
+
+        let mut frontier: VecDeque<Self> = VecDeque::new();
+        let mut visited: HashSet<Self> = HashSet::new();
+        while !frontier.is_empty() {
+            let current = frontier.pop_back().unwrap();
+            for mv in current.successors() {
+            let child = current.copy();
+                child.make_move(&mv);
+                if !visited.contains(&child) {
+
+                }
+            }
+        }
+        Some(vec![])
+    }
 }
 
 impl fmt::Display for LightsOutPuzzle {
